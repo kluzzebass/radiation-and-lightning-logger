@@ -6,15 +6,14 @@
 
 class Geiger {
   public:
-    Geiger(Stream &s) : log(s) {
-      count = 0;
-    };
+    Geiger(Stream &s) : log(s) {};
 
     void isr();
+    bool setup();
     void loop();
 
   private:
-    int count;
+    volatile int count = 0;
     Stream &log;
 
 };
