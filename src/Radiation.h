@@ -1,12 +1,12 @@
 
-#ifndef __Geiger_h__
-#define __Geiger_h__
+#ifndef __Radiation_h__
+#define __Radiation_h__
 
 #include <Arduino.h>
 
-class Geiger {
+class Radiation {
   public:
-    Geiger(Stream &s) : log(s) {};
+    Radiation(Stream &s) : log(s) {};
 
     void isr();
     bool setup();

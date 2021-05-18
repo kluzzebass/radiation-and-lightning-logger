@@ -1,10 +1,10 @@
 #include <Arduino.h>
 
-#include <Geiger.h>
+#include <Radiation.h>
 #include <Lightning.h>
 
 // Interrupt pin for radiation sensor
-#define GEIGER_IRQ_PIN D2
+#define RADIATION_IRQ_PIN D2
 
 // Interrupt pin for lightning sensor
 #define LIGHTNING_IRQ_PIN D1
@@ -12,14 +12,14 @@
 // CS pin for lightning sensor
 #define LIGHTNING_CS_PIN D8
 
-bool geigerOk;
+bool radiationOk;
 bool lightningOk;
 
-Geiger geiger(Serial);
+Radiation radiation(Serial);
 Lightning lightning(Serial, LIGHTNING_CS_PIN, LIGHTNING_IRQ_PIN);
 
-ICACHE_RAM_ATTR void geiger_isr() {
-  geiger.isr();
+ICACHE_RAM_ATTR void radiation_isr() {
+  radiation.isr();
 }
 
 ICACHE_RAM_ATTR void lightning_isr() {
@@ -29,8 +29,8 @@ ICACHE_RAM_ATTR void lightning_isr() {
 void setup() {
   Serial.begin(115200);
 
-  if (!(geigerOk = geiger.setup())) {
-    Serial.println("G: Radiation detector initialization failed.");
+  if (!(radiationOk = radiation.setup())) {
+    Serial.println("R: Radiation detector initialization failed.");
   }
 
   if (!(lightningOk = lightning.setup())) {
@@ -39,8 +39,8 @@ void setup() {
 
   interrupts();
 
-  pinMode(GEIGER_IRQ_PIN, INPUT);
-  attachInterrupt(digitalPinToInterrupt(GEIGER_IRQ_PIN), geiger_isr, FALLING);
+  pinMode(RADIATION_IRQ_PIN, INPUT);
+  attachInterrupt(digitalPinToInterrupt(RADIATION_IRQ_PIN), radiation_isr, FALLING);
 
   pinMode(LIGHTNING_IRQ_PIN, INPUT);
   attachInterrupt(digitalPinToInterrupt(LIGHTNING_IRQ_PIN), lightning_isr, RISING);
@@ -48,6 +48,6 @@ void setup() {
 }
 
 void loop() {
-  if (geigerOk) geiger.loop();
+  if (radiationOk) radiation.loop();
   if (lightningOk) lightning.loop();
 }
