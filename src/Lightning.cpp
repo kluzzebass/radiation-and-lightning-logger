@@ -8,7 +8,7 @@ void Lightning::isr() {
 bool Lightning::setup() {
 
   SPI.begin();
-  SPI.setClockDivider(SPI_CLOCK_DIV16);   // Set the SPI speed to SPI_CLOCK_DIV16/1MHz max 2MHz, NEVER 500kHz
+  SPI.setClockDivider(SPI_CLOCK_DIV16); // Set the SPI speed to SPI_CLOCK_DIV16/1MHz max 2MHz, NEVER 500kHz
   SPI.setDataMode(SPI_MODE1);
   SPI.setBitOrder(MSBFIRST);
 
@@ -18,7 +18,7 @@ bool Lightning::setup() {
     return false;
   }
 
-  //check SPI connection.
+  // check SPI connection.
   if (!as3935.checkConnection())
   {
     log.println("L: checkConnection() failed. check your SPI connection and SPI chip select pin. ");
@@ -27,7 +27,7 @@ bool Lightning::setup() {
   else
     log.println("L: SPI connection check passed. ");
 
-  //check the IRQ pin connection.
+  // check the IRQ pin connection.
   if (!as3935.checkIRQ())
   {
     log.println("L: checkIRQ() failed. check if the correct IRQ pin was passed to the AS3935SPI constructor. ");
@@ -36,8 +36,8 @@ bool Lightning::setup() {
   else
     log.println("L: IRQ pin connection check passed. ");
 
-  //calibrate the resonance frequency. failing the resonance frequency could indicate an issue 
-  //of the sensor. resonance frequency calibration will take about 1.7 seconds to complete.
+  // calibrate the resonance frequency. failing the resonance frequency could indicate an issue 
+  // of the sensor. resonance frequency calibration will take about 1.7 seconds to complete.
   int32_t frequency = 0;
   if (!as3935.calibrateResonanceFrequency(frequency))
   {
@@ -51,34 +51,34 @@ bool Lightning::setup() {
 
   log.print("L: Resonance Frequency is "); log.print(frequency); log.println(" Hz");
 
-	//calibrate the RCO.
-	if (!as3935.calibrateRCO())
-	{
-		log.println("L: RCO Calibration failed. ");
-		return false;
-	}
-	else
-		log.println("L: RCO Calibration passed. ");
+  // calibrate the RCO.
+  if (!as3935.calibrateRCO())
+  {
+    log.println("L: RCO Calibration failed. ");
+    return false;
+  }
+  else
+    log.println("L: RCO Calibration passed. ");
 
-	//set the analog front end to 'indoors'
-	as3935.writeAFE(AS3935MI::AS3935_INDOORS);
+  // set the analog front end to 'indoors'
+  as3935.writeAFE(AS3935MI::AS3935_INDOORS);
 
-	//set default value for noise floor threshold
-	as3935.writeNoiseFloorThreshold(AS3935MI::AS3935_NFL_2);
+  // set default value for noise floor threshold
+  as3935.writeNoiseFloorThreshold(AS3935MI::AS3935_NFL_2);
 
-	//set the default Watchdog Threshold
-	as3935.writeWatchdogThreshold(AS3935MI::AS3935_WDTH_2);
+  // set the default Watchdog Threshold
+  as3935.writeWatchdogThreshold(AS3935MI::AS3935_WDTH_2);
 
-	//set the default Spike Rejection 
-	as3935.writeSpikeRejection(AS3935MI::AS3935_SREJ_2);
+  // set the default Spike Rejection 
+  as3935.writeSpikeRejection(AS3935MI::AS3935_SREJ_2);
 
-	//write default value for minimum lightnings (1)
-	as3935.writeMinLightnings(AS3935MI::AS3935_MNL_1);
+  // write default value for minimum lightnings (1)
+  as3935.writeMinLightnings(AS3935MI::AS3935_MNL_1);
 
-	//do not mask disturbers
-	as3935.writeMaskDisturbers(false);
+  // do not mask disturbers
+  as3935.writeMaskDisturbers(false);
 
-	log.println("L: Initialization complete, waiting for events...");
+  log.println("L: Initialization complete, waiting for events...");
 
   return true;
 }
@@ -117,7 +117,7 @@ void Lightning::loop() {
         {
           senseAdjLast = now;
 
-          //alternatively increase spike rejection and watchdog threshold 
+          // alternatively increase spike rejection and watchdog threshold 
           if (srej < wdth)
           {
             if (as3935.increaseSpikeRejection())
@@ -146,8 +146,8 @@ void Lightning::loop() {
     }
   }
 
-  //increase sensor sensitivity every once in a while. SENSE_INCREASE_INTERVAL controls how quickly the code 
-  //attempts to increase sensitivity. 
+  // increase sensor sensitivity every once in a while. SENSE_INCREASE_INTERVAL controls how quickly the code 
+  // attempts to increase sensitivity. 
   if (now - senseAdjLast > SENSE_INCREASE_INTERVAL)
   {
     senseAdjLast = now;
@@ -159,7 +159,7 @@ void Lightning::loop() {
 
     if ((wdth > AS3935MI::AS3935_WDTH_0) || (srej > AS3935MI::AS3935_SREJ_0))
     {
-      //alternatively derease spike rejection and watchdog threshold 
+      // alternatively derease spike rejection and watchdog threshold 
       if (srej > wdth)
       {
         if (as3935.decreaseSpikeRejection())
