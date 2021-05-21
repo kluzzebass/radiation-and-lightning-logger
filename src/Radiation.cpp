@@ -14,8 +14,8 @@ void Radiation::loop() {
   int c = count;
 
   if (c) {
+    count -= c;
     log.println("R: Click!");
     led.blink(50);
-    count -= c;
   }
 }

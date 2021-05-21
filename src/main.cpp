@@ -23,7 +23,7 @@ Blink led(Serial, LED_BUILTIN, true);
 Radiation radiation(Serial, led);
 
 // Lightning detector
-Lightning lightning(Serial, led, LIGHTNING_CS_PIN, LIGHTNING_IRQ_PIN);
+Lightning lightning(Serial, led, LIGHTNING_CS_PIN, LIGHTNING_IRQ_PIN, false);
 
 ICACHE_RAM_ATTR void radiation_isr() {
   radiation.isr();

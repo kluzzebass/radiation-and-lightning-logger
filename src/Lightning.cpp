@@ -60,8 +60,8 @@ bool Lightning::setup() {
   else
     log.println("L: RCO Calibration passed. ");
 
-  // set the analog front end to 'indoors'
-  as3935.writeAFE(AS3935MI::AS3935_INDOORS);
+  // set the analog front end to 'outdoors' or 'indoors'
+  as3935.writeAFE(outdoors ? AS3935MI::AS3935_OUTDOORS : AS3935MI::AS3935_INDOORS);
 
   // set default value for noise floor threshold
   as3935.writeNoiseFloorThreshold(AS3935MI::AS3935_NFL_2);
@@ -140,9 +140,13 @@ void Lightning::loop() {
         break;
       case AS3935MI::AS3935_INT_L:
         led.blink(200);
-        log.print("L: Lightning detected! Storm Front is ");
+        log.println("L: Lightning detected!");
+        log.print("L: Storm Front is ");
         log.print(as3935.readStormDistance());
         log.println("km away.");
+        log.print("L: Lightning energy is ");
+        log.print(as3935.readEnergy());
+        log.println(" whatnots.");
         break;
     }
   }

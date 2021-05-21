@@ -20,8 +20,8 @@
 
 class Lightning {
   public:
-    Lightning(Stream &s, Blink &led, uint8_t cs, uint8_t irq)
-    : log(s), led(led), as3935(cs, irq) {};
+    Lightning(Stream &s, Blink &led, uint8_t cs, uint8_t irq, bool outdoors)
+    : log(s), led(led), as3935(cs, irq), outdoors(outdoors) {};
 
     void isr();
     bool setup();
@@ -32,6 +32,7 @@ class Lightning {
     Stream &log;
     Blink &led;
     AS3935SPI as3935;
+    bool outdoors;
     uint32_t senseAdjLast = 0L;
 
 };
