@@ -87,7 +87,7 @@ void Lightning::loop() {
   uint8_t wdth;
   uint8_t srej;
 
-  long now = millis();
+  unsigned long now = millis();
 
   if (interrupted) {
     delay(2);
@@ -139,6 +139,7 @@ void Lightning::loop() {
         }
         break;
       case AS3935MI::AS3935_INT_L:
+        led.blink(200);
         log.print("L: Lightning detected! Storm Front is ");
         log.print(as3935.readStormDistance());
         log.println("km away.");
@@ -159,7 +160,7 @@ void Lightning::loop() {
 
     if ((wdth > AS3935MI::AS3935_WDTH_0) || (srej > AS3935MI::AS3935_SREJ_0))
     {
-      // alternatively derease spike rejection and watchdog threshold 
+      // alternatively decrease spike rejection and watchdog threshold 
       if (srej > wdth)
       {
         if (as3935.decreaseSpikeRejection())

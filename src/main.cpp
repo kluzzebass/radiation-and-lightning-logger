@@ -1,5 +1,6 @@
 #include <Arduino.h>
 
+#include <Blink.h>
 #include <Radiation.h>
 #include <Lightning.h>
 
@@ -15,8 +16,14 @@
 bool radiationOk;
 bool lightningOk;
 
-Radiation radiation(Serial);
-Lightning lightning(Serial, LIGHTNING_CS_PIN, LIGHTNING_IRQ_PIN);
+// Indicator LED pin
+Blink led(Serial, LED_BUILTIN, true);
+
+// Radiation detector
+Radiation radiation(Serial, led);
+
+// Lightning detector
+Lightning lightning(Serial, led, LIGHTNING_CS_PIN, LIGHTNING_IRQ_PIN);
 
 ICACHE_RAM_ATTR void radiation_isr() {
   radiation.isr();
@@ -27,7 +34,10 @@ ICACHE_RAM_ATTR void lightning_isr() {
 }
 
 void setup() {
+
   Serial.begin(115200);
+
+  led.setup();
 
   if (!(radiationOk = radiation.setup())) {
     Serial.println("R: Radiation detector initialization failed.");
@@ -50,4 +60,5 @@ void setup() {
 void loop() {
   if (radiationOk) radiation.loop();
   if (lightningOk) lightning.loop();
+  led.loop();
 }
