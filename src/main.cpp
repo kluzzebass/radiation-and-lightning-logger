@@ -46,10 +46,6 @@ ICACHE_RAM_ATTR void lightning_isr() {
   lightning.isr();
 }
 
-void setupWifi() {
-
-}
-
 void setupRadiation() {
   if (!(radiationOk = radiation.setup())) {
     logger.println(F("R: Radiation detector initialization failed."));
