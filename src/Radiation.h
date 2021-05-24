@@ -5,10 +5,14 @@
 #include <Arduino.h>
 
 #include <Blink.h>
+#include <MQTT.h>
+#include <ArduinoJson.h>
+
+#define RADIATION_JSON_MSG_LEN 20
 
 class Radiation {
   public:
-    Radiation(Stream &s, Blink &led) : log(s), led(led) {};
+    Radiation(Stream &s, Blink &led, MQTT &mqtt) : logger(s), led(led), mqtt(mqtt) {};
 
     void isr();
     bool setup();
@@ -16,8 +20,9 @@ class Radiation {
 
   private:
     volatile int count = 0;
-    Stream &log;
+    Stream &logger;
     Blink &led;
+    MQTT &mqtt;
 
 };
 

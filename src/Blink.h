@@ -6,8 +6,8 @@
 
 class Blink {
   public:
-    Blink(Stream &s, uint8_t p) : log(s), pin(p), activeLow(false) {};
-    Blink(Stream &s, uint8_t p, bool activeLow) : log(s), pin(p), activeLow(activeLow) {};
+    Blink(Stream &s, uint8_t p) : logger(s), pin(p), activeLow(false) {};
+    Blink(Stream &s, uint8_t p, bool activeLow) : logger(s), pin(p), activeLow(activeLow) {};
 
     void setup();
     void loop();
@@ -16,7 +16,7 @@ class Blink {
   private:
     bool on = false;
     unsigned long onUntil = 0;
-    Stream &log;
+    Stream &logger;
     uint8_t pin;
     bool activeLow;
 

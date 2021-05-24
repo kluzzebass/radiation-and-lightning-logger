@@ -6,7 +6,7 @@ void Radiation::isr() {
 }
 
 bool Radiation::setup() {
-  log.println("R: Radiation detector initialized.");
+  logger.println(F("R: Radiation detector initialized."));
   return true;
 }
 
@@ -14,8 +14,16 @@ void Radiation::loop() {
   int c = count;
 
   if (c) {
+    char msg[RADIATION_JSON_MSG_LEN];
+    StaticJsonDocument<RADIATION_JSON_MSG_LEN> doc;
+
     count -= c;
-    log.println("R: Click!");
+    logger.println(F("R: Click!"));
     led.blink(50);
+
+    doc["count"] = c;
+    
+    serializeJson(doc, msg);
+    mqtt.publish("radiation", msg);
   }
 }

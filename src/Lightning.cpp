@@ -14,51 +14,53 @@ bool Lightning::setup() {
 
   if (!as3935.begin())
   {
-    log.println("L: begin() failed. check your AS3935 Interface setting.");
+    logger.println(F("L: begin() failed. check your AS3935 Interface setting."));
     return false;
   }
 
   // check SPI connection.
   if (!as3935.checkConnection())
   {
-    log.println("L: checkConnection() failed. check your SPI connection and SPI chip select pin. ");
+    logger.println(F("L: checkConnection() failed. check your SPI connection and SPI chip select pin. "));
     return false;
   }
   else
-    log.println("L: SPI connection check passed. ");
+    logger.println(F("L: SPI connection check passed. "));
 
   // check the IRQ pin connection.
   if (!as3935.checkIRQ())
   {
-    log.println("L: checkIRQ() failed. check if the correct IRQ pin was passed to the AS3935SPI constructor. ");
+    logger.println(F("L: checkIRQ() failed. check if the correct IRQ pin was passed to the AS3935SPI constructor. "));
     return false;
   }
   else
-    log.println("L: IRQ pin connection check passed. ");
+    logger.println(F("L: IRQ pin connection check passed. "));
 
   // calibrate the resonance frequency. failing the resonance frequency could indicate an issue 
   // of the sensor. resonance frequency calibration will take about 1.7 seconds to complete.
   int32_t frequency = 0;
   if (!as3935.calibrateResonanceFrequency(frequency))
   {
-    log.print("L: Resonance Frequency Calibration failed: is ");
-    log.print(frequency);
-    log.println(" Hz, should be 482500 Hz - 517500 Hz");
+    logger.print(F("L: Resonance Frequency Calibration failed: is "));
+    logger.print(frequency);
+    logger.println(F(" Hz, should be 482500 Hz - 517500 Hz"));
     return false;
   }
   else
-    log.println("L: Resonance Frequency Calibration passed. ");
+    logger.println(F("L: Resonance Frequency Calibration passed. "));
 
-  log.print("L: Resonance Frequency is "); log.print(frequency); log.println(" Hz");
+  logger.print(F("L: Resonance Frequency is "));
+  logger.print(frequency);
+  logger.println(F(" Hz"));
 
   // calibrate the RCO.
   if (!as3935.calibrateRCO())
   {
-    log.println("L: RCO Calibration failed. ");
+    logger.println(F("L: RCO Calibration failed. "));
     return false;
   }
   else
-    log.println("L: RCO Calibration passed. ");
+    logger.println(F("L: RCO Calibration passed. "));
 
   // set the analog front end to 'outdoors' or 'indoors'
   as3935.writeAFE(outdoors ? AS3935MI::AS3935_OUTDOORS : AS3935MI::AS3935_INDOORS);
@@ -78,7 +80,7 @@ bool Lightning::setup() {
   // do not mask disturbers
   as3935.writeMaskDisturbers(false);
 
-  log.println("L: Initialization complete, waiting for events...");
+  logger.println(F("L: Initialization complete, waiting for events..."));
 
   return true;
 }
@@ -95,18 +97,18 @@ void Lightning::loop() {
 
     switch (as3935.readInterruptSource()) {
       case AS3935MI::AS3935_INT_NH:
-        log.println("L: Noise floor too high. attempting to increase noise floor threshold. ");
+        logger.println(F("L: Noise floor too high. attempting to increase noise floor threshold. "));
 
         // if the noise floor threshold setting is not yet maxed out, increase the setting.
         // note that noise floor threshold events can also be triggered by an incorrect
         // analog front end setting.
         if (as3935.increaseNoiseFloorThreshold())
-          log.println("L: Increased noise floor threshold");
+          logger.println(F("L: Increased noise floor threshold"));
         else
-          log.println("L: Noise floor threshold already at maximum");
+          logger.println(F("L: Noise floor threshold already at maximum"));
         break;
       case AS3935MI::AS3935_INT_D:
-        log.println("L: Disturber detected, attempting to increase noise floor threshold. ");
+        logger.println(F("L: Disturber detected, attempting to increase noise floor threshold. "));
 
         // increasing the Watchdog Threshold and / or Spike Rejection setting improves the AS3935s resistance 
         // against disturbers but also decrease the lightning detection efficiency (see AS3935 datasheet)
@@ -121,32 +123,26 @@ void Lightning::loop() {
           if (srej < wdth)
           {
             if (as3935.increaseSpikeRejection())
-              log.println("L: Increased spike rejection ratio");
+              logger.println(F("L: Increased spike rejection ratio"));
             else
-              log.println("L: Spike rejection ratio already at maximum");
+              logger.println(F("L: Spike rejection ratio already at maximum"));
           }
           else
           {
             if (as3935.increaseWatchdogThreshold())
-              log.println("L: Increased watchdog threshold");
+              logger.println(F("L: Increased watchdog threshold"));
             else
-              log.println("L: Watchdog threshold already at maximum");
+              logger.println(F("L: Watchdog threshold already at maximum"));
           }
         }
         else
         {
-          log.println("L: Error: Watchdog Threshold and Spike Rejection settings are already maxed out.");
+          logger.println(F("L: Error: Watchdog Threshold and Spike Rejection settings are already maxed out."));
         }
         break;
       case AS3935MI::AS3935_INT_L:
         led.blink(200);
-        log.println("L: Lightning detected!");
-        log.print("L: Storm Front is ");
-        log.print(as3935.readStormDistance());
-        log.println("km away.");
-        log.print("L: Lightning energy is ");
-        log.print(as3935.readEnergy());
-        log.println(" whatnots.");
+        transmitReading(as3935.readStormDistance(), as3935.readEnergy());
         break;
     }
   }
@@ -157,7 +153,7 @@ void Lightning::loop() {
   {
     senseAdjLast = now;
 
-    log.println("L: No disturber detected, attempting to decrease noise floor threshold.");
+    logger.println(F("L: No disturber detected, attempting to decrease noise floor threshold."));
 
     wdth = as3935.readWatchdogThreshold();
     srej = as3935.readSpikeRejection();
@@ -168,18 +164,37 @@ void Lightning::loop() {
       if (srej > wdth)
       {
         if (as3935.decreaseSpikeRejection())
-          log.println("L: Decreased spike rejection ratio");
+          logger.println(F("L: Decreased spike rejection ratio"));
         else
-          log.println("L: Spike rejection ratio already at minimum");
+          logger.println(F("L: Spike rejection ratio already at minimum"));
       }
       else
       {
         if (as3935.decreaseWatchdogThreshold())
-          log.println("L: Decreased watchdog threshold");
+          logger.println(F("L: Decreased watchdog threshold"));
         else
-          log.println("L: Watchdog threshold already at minimum");
+          logger.println(F("L: Watchdog threshold already at minimum"));
       }
     }
   }
+}
 
+
+void Lightning::transmitReading(int distance, int energy) {
+  char msg[LIGHTNING_JSON_MSG_LEN];
+  StaticJsonDocument<LIGHTNING_JSON_MSG_LEN> doc;
+
+  logger.println(F("L: Lightning detected!"));
+  logger.print(F("L: Storm Front is "));
+  logger.print(distance);
+  logger.println(F("km away."));
+  logger.print(F("L: Lightning energy is "));
+  logger.print(energy);
+  logger.println(F(" whatnots."));
+
+  doc["distance"] = distance;
+  doc["energy"] = energy;
+
+  serializeJson(doc, msg);
+  mqtt.publish("lightning", msg);
 }
