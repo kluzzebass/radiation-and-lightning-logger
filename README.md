@@ -9,7 +9,7 @@ but can probably be built using PlatformIO alone. Have a look in the
 attention to `upload_port` and `monitor_port` as these will change
 between operating systems.
 
-In the `main.ccp` file, the following definitions are found:
+In the `main.cpp` file, the following definitions are found:
 
 ```
 #define ENABLE_RADIATION
