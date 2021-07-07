@@ -8,7 +8,8 @@
 #include <MQTT.h>
 #include <ArduinoJson.h>
 
-#define RADIATION_JSON_MSG_LEN 20
+#define RADIATION_JSON_MSG_LEN 32
+#define RADIATION_JSON_DOC_LEN 20
 
 class Radiation {
   public:

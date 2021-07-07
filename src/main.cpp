@@ -8,12 +8,17 @@
 #include <Config.h>
 #include <Wifi.h>
 #include <MQTT.h>
+#include <Uptime.h>
 #include <Blink.h>
 #include <Radiation.h>
 #include <Lightning.h>
 
 // Pull this low to reset the clear the wifi settings and format the file system.
 #define RESET_PIN D0
+
+// Interval (ms) between each uptime update
+#define UPTIME_INTERVAL 10000
+
 
 #ifdef ENABLE_RADIATION
 // Interrupt pin for radiation sensor
@@ -33,6 +38,7 @@ Stream &logger = Serial;
 Config cfg(logger, "/config.json");
 Wifi wifi(logger, cfg);
 MQTT mqtt(logger, cfg);
+Uptime uptime(logger, mqtt, UPTIME_INTERVAL);
 
 bool resetEverything = false;
 #ifdef ENABLE_RADIATION
@@ -111,6 +117,7 @@ void setup() {
   cfg.read();
   wifi.setup(resetEverything);
   mqtt.setup();
+  uptime.setup();
 
   // Lastly, set up the detectors
   interrupts();
@@ -124,6 +131,7 @@ void setup() {
 }
 
 void loop() {
+  uptime.loop();
 #ifdef ENABLE_RADIATION
   if (radiationOk) radiation.loop();
 #endif // ENABLE_RADIATION
@@ -132,4 +140,7 @@ void loop() {
 #endif // ENABLE_LIGHTNING
   led.loop();
   mqtt.loop();
+
 }
+
+

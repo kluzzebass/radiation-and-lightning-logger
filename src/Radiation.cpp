@@ -15,15 +15,17 @@ void Radiation::loop() {
 
   if (c) {
     char msg[RADIATION_JSON_MSG_LEN];
-    StaticJsonDocument<RADIATION_JSON_MSG_LEN> doc;
+    StaticJsonDocument<RADIATION_JSON_DOC_LEN> doc;
 
     count -= c;
     logger.println(F("R: Click!"));
     led.blink(50);
 
     doc["count"] = c;
-    
+
     serializeJson(doc, msg);
+
+    logger.println(F("R: Reporting radiation."));
     mqtt.publish("radiation", msg);
   }
 }

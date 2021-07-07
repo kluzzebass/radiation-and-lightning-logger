@@ -182,7 +182,7 @@ void Lightning::loop() {
 
 void Lightning::transmitReading(int distance, int energy) {
   char msg[LIGHTNING_JSON_MSG_LEN];
-  StaticJsonDocument<LIGHTNING_JSON_MSG_LEN> doc;
+  StaticJsonDocument<LIGHTNING_JSON_DOC_LEN> doc;
 
   logger.println(F("L: Lightning detected!"));
   logger.print(F("L: Storm Front is "));
@@ -196,5 +196,7 @@ void Lightning::transmitReading(int distance, int energy) {
   doc["energy"] = energy;
 
   serializeJson(doc, msg);
+
+  logger.println(F("L: Reporting lightning."));
   mqtt.publish("lightning", msg);
 }

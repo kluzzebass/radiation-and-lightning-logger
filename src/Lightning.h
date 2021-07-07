@@ -19,6 +19,7 @@
 
 #define SENSE_INCREASE_INTERVAL 15000
 #define LIGHTNING_JSON_MSG_LEN 48
+#define LIGHTNING_JSON_DOC_LEN 48
 
 
 class Lightning {
