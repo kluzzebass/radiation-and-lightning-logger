@@ -48,8 +48,8 @@ When the Wemos D1 Mini is booted, the WiFiManager will go into
 configuration mode, setting up an AP with a landing page for
 configuring the WiFi network and MQTT server. Once completed,
 it will try to connect to the configured WiFi network whenever
-it's beeing booted. If reconfiguration is needed, connect pin D0
-to GND and then hit the reset button on the Wemos D1 Mini. This
+it's beeing booted. If reconfiguration is needed, connect pin `D0`
+to `GND` and then hit the reset button on the Wemos D1 Mini. This
 will force it the WiFiManager back into configuration mode. Remove
 the GND short after reconfiguring, otherwise it'll just boot back
 into configuration mode again.
