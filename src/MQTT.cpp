@@ -33,7 +33,14 @@ void MQTT::reconnect() {
 }
 
 void MQTT::publish(const char *topic, const char *msg) {
-  char fullTopic[MAX_PREFIX_LEN + MAX_TOPIC_LENGTH + 2];
-  snprintf(fullTopic, MAX_PREFIX_LEN + MAX_TOPIC_LENGTH + 2, "%s/%s", cfg.mqttPrefix, topic);
+  char fullTopic[MAX_PREFIX_LEN + MAX_TOPIC_LENGTH + 3];
+  snprintf(fullTopic, MAX_PREFIX_LEN + MAX_TOPIC_LENGTH + 2, "/%s/%s", cfg.mqttPrefix, topic);
+
+  // logger.print("topic: ");
+  // logger.println(fullTopic);
+
+  // logger.print("  msg: ");
+  // logger.println(msg);
+
   client.publish(fullTopic, msg);
 }

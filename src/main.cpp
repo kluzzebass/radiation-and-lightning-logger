@@ -1,7 +1,7 @@
 
+// Use these to enable/disable the radiation and/or lightning detection code
 #define ENABLE_RADIATION
 #define ENABLE_LIGHTNING
-
 
 #include <Arduino.h>
 
@@ -46,7 +46,7 @@ bool radiationOk;
 #endif // ENABLE_RADIATION
 #ifdef ENABLE_LIGHTNING
 bool lightningOk;
-#endif // ENABLE_LIGHTNING
+// #endif // ENABLE_LIGHTNING
 
 // Indicator LED pin
 Blink led(logger, LED_BUILTIN, true);
@@ -97,7 +97,7 @@ void setupLightning() {
 
 void checkReset() {
   pinMode(RESET_PIN, INPUT_PULLUP);
-  delay(2);
+  delay(200);
 
   if (digitalRead(RESET_PIN) == 0) {
     logger.println("### RESETTING EVERYTHING ###");
