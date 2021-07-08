@@ -46,7 +46,7 @@ bool radiationOk;
 #endif // ENABLE_RADIATION
 #ifdef ENABLE_LIGHTNING
 bool lightningOk;
-// #endif // ENABLE_LIGHTNING
+#endif // ENABLE_LIGHTNING
 
 // Indicator LED pin
 Blink led(logger, LED_BUILTIN, true);
