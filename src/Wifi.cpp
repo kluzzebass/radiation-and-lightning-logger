@@ -75,6 +75,8 @@ void Wifi::setup(bool reset) {
   logger.print("W:   MQTT Prefix: ");
   logger.println(cfg.mqttPrefix);
 
+  WiFi.printDiag(logger);
+
   logger.println("W: Wifi initialized.");
 }
 

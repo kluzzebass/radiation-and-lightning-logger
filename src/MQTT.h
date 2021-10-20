@@ -27,6 +27,8 @@ class MQTT {
     PubSubClient client;
     String clientId;
     unsigned long lastConnectionAttempt = 0;
+
+    const char *translateState(int state);
 };
 
 #endif

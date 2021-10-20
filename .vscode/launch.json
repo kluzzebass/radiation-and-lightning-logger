@@ -29,6 +29,16 @@
             "projectEnvName": "d1_mini",
             "toolchainBinDir": "/Users/kluzz/.platformio/packages/toolchain-xtensa/bin",
             "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "platformio-debug",
+            "request": "launch",
+            "name": "PIO Debug (without uploading)",
+            "executable": "/Users/kluzz/Code/radiation-and-lightning-logger/.pio/build/d1_mini/firmware.elf",
+            "projectEnvName": "d1_mini",
+            "toolchainBinDir": "/Users/kluzz/.platformio/packages/toolchain-xtensa/bin",
+            "internalConsoleOptions": "openOnSessionStart",
+            "loadMode": "manual"
         }
     ]
 }
